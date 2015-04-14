@@ -5,7 +5,7 @@
 
 ## 流程介绍
 
-![face_retrieval](/Users/zhangyx/Desktop/face_retrieval.jpg)
+![face_retrieval](https://raw.githubusercontent.com/stdcoutzyx/FaceRetrieval/master/doc/face_retrieval.jpg)
 
 ## 目标
 - 比较检索算法和分类算法在人脸检索上的优劣，（检索算法返回多个结果，因而可以预期检索算法比分类算法好）
