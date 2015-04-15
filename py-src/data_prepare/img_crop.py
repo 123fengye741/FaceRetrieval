@@ -16,7 +16,7 @@ def crop_img_by_half_center(src_file_path, dest_file_path):
     new_new_im = new_im.resize((50,50))
     new_new_im.save(dest_file_path)
 
-def walk_through_the_folder(aligned_db_folder, result_folder):
+def walk_through_the_folder_for_crop(aligned_db_folder, result_folder):
     if not os.path.exists(result_folder):
         os.mkdir(result_folder)
     
@@ -52,5 +52,5 @@ if __name__ == '__main__':
         aligned_db_folder += '/'
     if not result_folder.endswith('/'):
         result_folder += '/'
-    walk_through_the_folder(aligned_db_folder, result_folder)
+    walk_through_the_folder_for_crop(aligned_db_folder, result_folder)
     
