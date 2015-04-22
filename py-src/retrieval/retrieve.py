@@ -64,6 +64,4 @@ if __name__ == '__main__':
     test_x, test_y, train_x, train_y = load_train_and_test(test_data_folder, train_data_folder)
     search_results = search(test_x, test_y, train_x, train_y, pre_process_norm, sim_metric_cos)
     cPickle_output(search_results, search_results_file)
-    
-
 
