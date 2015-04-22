@@ -1,2 +1,4 @@
 data
+data_vec
 .DS_store
+*.pyc
