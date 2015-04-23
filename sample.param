@@ -1,0 +1,40 @@
+test_data_folder: test_vec
+train_data_folder: train_vec
+# this should be in the same folder with test_vec and train_vec
+# and the program should be executed in the same folder with this file
+
+
+#[exp_1]
+#description: direct retrieval based on pixels with Euclidean
+#pre_process_method: None
+#sim_metric_method: euc
+
+[exp_2]
+description: direct retrieval based on pixels with cosine
+pre_process_method: None
+sim_metric_method: cos
+
+#[exp_3]
+#description: retrieval based on pca dimension reduction to 160 with Euclidean
+#pre_process_method: pca
+#sim_metric_method: euc
+#components: 160
+
+[exp_4]
+description: retrieval based on pca dimension reduction to 160 with cosine
+pre_process_method: pca
+sim_metric_method: cos
+components: 160
+
+#[exp_5]
+#description: retrieval based on pca dimension reduction to 500 with Euclidean
+#pre_process_method: pca
+#sim_metric_method: euc
+#components: 500
+
+[exp_6]
+description: retrieval based on pca dimension reduction to 500 with cosine
+pre_process_method: pca
+sim_metric_method: cos
+components: 500
+
