@@ -3,6 +3,8 @@
 
 from retrieval.load_data import *
 from retrieval.pre_process import *
+from retrieval.parse import *
+from retrieval.evaluate import evaluate_precision
 from data_prepare.vectorize_img import cPickle_output
 import numpy as np
 import sys
@@ -19,9 +21,15 @@ def load_train_and_test(test_data_folder, train_data_folder):
     print 'train_y: ', train_y.shape
     return test_x, test_y, train_x, train_y
 
-def search(test_x, test_y, train_x, train_y, pre_process_method, sim_metric_method):
+def search(test_x, test_y, train_x, train_y, str_pre_process, str_sim_metric, params):
+    pre_process_method = pre_process_methods_set[str_pre_process]
     if pre_process_method != None:
-        test_x, train_x = pre_process_method(test_x, train_x)
+        test_x, train_x = pre_process_method(test_x, train_x, params)
+
+    sim_metric_method = sim_metric_methods_set[str_sim_metric]
+    if str_sim_metric == 'cos':
+        test_x, train_x = norm_data(test_x, train_x)
+
     assert test_x.shape[1] == train_x.shape[1]
     query_sample_num = len(test_x)
     
@@ -42,24 +50,29 @@ def search(test_x, test_y, train_x, train_y, pre_process_method, sim_metric_meth
     print ''
     return search_results
 
-def sim_metric_cos(sample, train_x):
-    return 1 - np.inner(train_x, sample)
-
-def sim_metric_euc(sample, train_x):
-    return np.sum( (train_x - sample) ** 2, axis=1)
-
 if __name__ == '__main__':
-    if len(sys.argv) != 4:
-        print 'Usage: python %s test_data_folder train_data_folder search_results_file' % (sys.argv[0])
+    if len(sys.argv) != 2:
+        print 'Usage: python %s exp_param' % (sys.argv[0])
         sys.exit()
 
-    test_data_folder  = sys.argv[1]
-    train_data_folder = sys.argv[2]
-    search_results_file = sys.argv[3]
+    exp_params_file = sys.argv[1]
+    params_results, test_data_folder, train_data_folder = parse_params(exp_params_file)
     test_x, test_y, train_x, train_y = load_train_and_test(test_data_folder, train_data_folder)
-    # search_results = search(test_x, test_y, train_x, train_y, None, sim_metric_euc)
-    # search_results = search(test_x, test_y, train_x, train_y, norm_data, sim_metric_cos)
-    # search_results = search(test_x, test_y, train_x, train_y, pca_data, sim_metric_euc)
-    search_results = search(test_x, test_y, train_x, train_y, pca_norm_data, sim_metric_cos)
-    cPickle_output(search_results, search_results_file)
+
+    print ''
+    print '%d experiments' % (len(params_results))
+
+    for params in params_results:
+        description = params['description']
+        exp_id = params['id']
+        print ''
+        print '*************************************************'
+        print exp_id, '--', description
+        str_pre_process = params['pre_process_method']
+        str_sim_metric  = params['sim_metric_method']
+        search_results = search(test_x, test_y, train_x, train_y, 
+                str_pre_process, str_sim_metric, params)
+        evaluate_precision(search_results)
+
+    # cPickle_output(search_results, search_results_file)
 

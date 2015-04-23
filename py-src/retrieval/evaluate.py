@@ -7,9 +7,6 @@ import pickle
 
 def evaluate_AP(search_results_file):
     '''count num of right prediction of top-N'''
-    f = open(search_results_file, 'rb')
-    results = pickle.load(f)
-    f.close()
     num_samples  = len(results)
     top_1_right  = 0
     top_5_right  = 0
@@ -34,11 +31,8 @@ def evaluate_AP(search_results_file):
     print 'top-10 AP: %f = %d / %d' % (top_10_precision, top_10_right, num_samples * 10)
 
 
-def evaluate_precision(search_results_file):
+def evaluate_precision(results):
     '''retrieval is right when right prediction appears in top-N'''
-    f = open(search_results_file, 'rb')
-    results = pickle.load(f)
-    f.close()
     num_samples  = len(results)
     top_1_right  = 0
     top_5_right  = 0
@@ -69,6 +63,10 @@ if __name__ == '__main__':
         sys.exit()
 
     search_results_file = sys.argv[1]
-    evaluate_AP(search_results_file)
-    evaluate_precision(search_results_file)
+    f = open(search_results_file, 'rb')
+    results = pickle.load(f)
+    f.close()
+
+    evaluate_AP(results)
+    evaluate_precision(results)
     

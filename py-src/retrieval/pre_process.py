@@ -16,16 +16,20 @@ def norm_data(test_x, train_x):
     norm_train = sqrt_norm(train_x)
     return norm_test, norm_train
 
-def pca_data(test_x, train_x):
+def pca_data(test_x, train_x, params):
     print 'pcaing data ...'
-    pca = RandomizedPCA(160, whiten=True).fit(train_x)
+    components = int(params['components'])
+    pca = RandomizedPCA(components, whiten=True).fit(train_x)
     pca_train_x = pca.transform(train_x)
     pca_test_x  = pca.transform(test_x)
     return pca_test_x, pca_train_x
 
-def pca_norm_data(test_x, train_x):
-    print 'pcaing data and then sqrt normalizing data ...'
-    pca = RandomizedPCA(160, whiten=True).fit(train_x)
-    pca_train_x = pca.transform(train_x)
-    pca_test_x  = pca.transform(test_x)
-    return norm_data(pca_test_x, pca_train_x)
+def sim_metric_cos(sample, train_x):
+    return 1 - np.inner(train_x, sample)
+
+def sim_metric_euc(sample, train_x):
+    return np.sum( (train_x - sample) ** 2, axis=1)
+
+pre_process_methods_set = {'pca': pca_data, 'None':None}
+sim_metric_methods_set  = {'euc': sim_metric_euc, 'cos': sim_metric_cos}
+
