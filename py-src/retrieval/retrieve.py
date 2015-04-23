@@ -2,6 +2,7 @@
 # -*- coding:utf8 -*-
 
 from retrieval.load_data import *
+from retrieval.pre_process import *
 from data_prepare.vectorize_img import cPickle_output
 import numpy as np
 import sys
@@ -18,19 +19,9 @@ def load_train_and_test(test_data_folder, train_data_folder):
     print 'train_y: ', train_y.shape
     return test_x, test_y, train_x, train_y
 
-def norm_data(x):
-    sqrt_x = np.sqrt(np.sum(x**2, axis=1))
-    sqrt_x = sqrt_x.reshape((sqrt_x.shape[0], 1))
-    norm_x = x / sqrt_x
-    return norm_x
-
-def pre_process_norm(test_x, train_x):
-    norm_test  = norm_data(test_x)
-    norm_train = norm_data(train_x)
-    return norm_test, norm_train
-
 def search(test_x, test_y, train_x, train_y, pre_process_method, sim_metric_method):
-    test_x, train_x = pre_process_method(test_x, train_x)
+    if pre_process_method != None:
+        test_x, train_x = pre_process_method(test_x, train_x)
     assert test_x.shape[1] == train_x.shape[1]
     query_sample_num = len(test_x)
     
@@ -43,15 +34,19 @@ def search(test_x, test_y, train_x, train_y, pre_process_method, sim_metric_meth
 
         search_result = []
         for index in sort_index[0:10]:
-            search_result.append((train_y[index], 1 - sim_result[index]))
+            search_result.append((train_y[index], sim_result[index]))
         search_results.append((test_label, search_result))
         if i % 100 == 0:
             sys.stdout.write('\rdone: ' + str(i))
             sys.stdout.flush()
+    print ''
     return search_results
 
 def sim_metric_cos(sample, train_x):
     return 1 - np.inner(train_x, sample)
+
+def sim_metric_euc(sample, train_x):
+    return np.sum( (train_x - sample) ** 2, axis=1)
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
@@ -62,6 +57,9 @@ if __name__ == '__main__':
     train_data_folder = sys.argv[2]
     search_results_file = sys.argv[3]
     test_x, test_y, train_x, train_y = load_train_and_test(test_data_folder, train_data_folder)
-    search_results = search(test_x, test_y, train_x, train_y, pre_process_norm, sim_metric_cos)
+    # search_results = search(test_x, test_y, train_x, train_y, None, sim_metric_euc)
+    # search_results = search(test_x, test_y, train_x, train_y, norm_data, sim_metric_cos)
+    # search_results = search(test_x, test_y, train_x, train_y, pca_data, sim_metric_euc)
+    search_results = search(test_x, test_y, train_x, train_y, pca_norm_data, sim_metric_cos)
     cPickle_output(search_results, search_results_file)
 
