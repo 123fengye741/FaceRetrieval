@@ -96,6 +96,8 @@ train_vec/
 
 #### 配置文件说明
 
+样例配置文件如下：
+
 <pre>
 test_data_folder: test_vec
 train_data_folder: train_vec
