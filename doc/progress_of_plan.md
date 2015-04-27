@@ -38,4 +38,17 @@
 - PCA降维实验，降到160/500维，然后使用余弦相似度/欧式距离进行相似度查询，结果见report_on_youtube.md
 - 使用配置文件的方式定义实验，实现实验的自动化。具体参见README.md文档的程序使用介绍
 
+## LFW Data Release (20150427/张延祥)
+
+- LFW数据集描述在report_on_lfw.md文件中
+- 处理好的数据在`dell2:/home/zhangyx/face_retrieval/lfw_data`
+- query_set.csv / searched_set.csv / test_vec（向量文件）/ train_vec（向量文件）均生成
+
+## Eigen Face on both LFW Data and Yotube Face (20150427/张延祥)
+
+- Eigen face实现，其与PCA的区别在于在PCA前要中心化
+- 结果在report文件中。
+
+
+
 
