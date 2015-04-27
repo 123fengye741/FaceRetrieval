@@ -1,4 +1,4 @@
-data
-data_vec
+youtube_data
+lfw_data
 .DS_store
 *.pyc
