@@ -2,7 +2,14 @@
 # -*- coding:utf8 -*-
 
 import numpy as np
+from numpy.random import RandomState
 from sklearn.decomposition import RandomizedPCA
+from sklearn.decomposition import ProjectedGradientNMF
+from sklearn.decomposition import FastICA
+from sklearn.decomposition import MiniBatchSparsePCA
+
+
+rng = RandomState(0)
 
 def sqrt_norm(x):
     sqrt_x = np.sqrt(np.sum(x**2, axis=1))
@@ -38,11 +45,48 @@ def eigen_face(test_x, train_x, params):
     center_test, center_train = center_data(test_x, train_x)
     return pca_data(center_test, center_train, params)
 
+def FastICA_data(test_x, train_x, params):
+    print 'centering data ...'
+    center_test, center_train = center_data(test_x, train_x)
+
+    print 'icaing data ...'
+    components = int(params['components'])
+    ica = FastICA(n_components=components, whiten=True).fit(train_x)
+    ica_train_x = ica.transform(train_x)
+    ica_test_x  = ica.transform(test_x)
+    return ica_test_x, ica_train_x
+
+def MiniBatchSparsePCA_data(test_x, train_x, params):
+    print 'centering data ...'
+    center_test, center_train = center_data(test_x, train_x)
+
+    print 'sparse pca data ...'
+    components = int(params['components'])
+    alpha = float(params['alpha'])
+    n_iter = int(params['n_iter'])
+    batch_size = int(params['batch_size'])
+    
+    pca = MiniBatchSparsePCA(n_components=components, alpha=alpha, n_iter=n_iter,
+            batch_size=batch_size, random_state=rng).fit(train_x)
+    
+    new_train_x = pca.transform(train_x)
+    new_test_x  = pca.transform(test_x)
+    return new_test_x, new_train_x
+
 def sim_metric_cos(sample, train_x):
     return 1 - np.inner(train_x, sample)
 
 def sim_metric_euc(sample, train_x):
     return np.sum( (train_x - sample) ** 2, axis=1)
 
-pre_process_methods_set = {'pca': pca_data, 'None':None, 'eigen': eigen_face}
-sim_metric_methods_set  = {'euc': sim_metric_euc, 'cos': sim_metric_cos}
+pre_process_methods_set = {
+    'pca': pca_data, 
+    'None':None, 
+    'eigen': eigen_face,
+    'ica': FastICA_data,
+    'sparse_pca': MiniBatchSparsePCA_data
+}
+sim_metric_methods_set  = {
+    'euc': sim_metric_euc, 
+    'cos': sim_metric_cos
+}
