@@ -5,7 +5,7 @@ import os
 import sys
 import pickle
 
-def evaluate_AP(search_results_file):
+def evaluate_AP(results):
     '''count num of right prediction of top-N'''
     num_samples  = len(results)
     top_1_right  = 0

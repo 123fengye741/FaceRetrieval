@@ -4,7 +4,7 @@
 from retrieval.load_data import *
 from retrieval.pre_process import *
 from retrieval.parse import *
-from retrieval.evaluate import evaluate_precision
+from retrieval.evaluate import evaluate_precision, evaluate_AP
 from data_prepare.vectorize_img import cPickle_output
 import numpy as np
 import sys
@@ -73,6 +73,7 @@ if __name__ == '__main__':
         search_results = search(test_x, test_y, train_x, train_y, 
                 str_pre_process, str_sim_metric, params)
         evaluate_precision(search_results)
+        evaluate_AP(search_results)
 
     # cPickle_output(search_results, search_results_file)
 
