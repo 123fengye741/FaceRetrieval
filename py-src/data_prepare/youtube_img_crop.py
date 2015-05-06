@@ -37,10 +37,10 @@ def walk_through_the_folder_for_crop(aligned_db_folder, result_folder):
                 dest_img_path = dest_video_path + img_file
                 crop_img_by_half_center(src_img_path, dest_img_path)
             i += 1
-            img_count += len(src_video_path)
+            img_count += len(os.listdir(src_video_path))
             sys.stdout.write('\rsub_folder: %d, imgs %d' % (i, img_count) )
             sys.stdout.flush()
-    print '\nsub_folder: %d, imgs %d' % (i, img_count)
+    print ''
         
 if __name__ == '__main__':
     if len(sys.argv) != 3:
